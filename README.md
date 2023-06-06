@@ -8,10 +8,18 @@ Pytorch >= 1.6
 scipy
 
 # Train, test and finetune
-If you want to start training, just use python main.py --model "train". if you want to test , use python main.py --mdoel "test". finetune use python main.py --model "finetune". 
+If you want to start training, just use 
+```python main.py --model "train"```. 
+if you want to test , use 
+```python main.py --mdoel "test"```.
+finetune use ```python main.py --model "finetune"```. 
 
 # Simulation of data generation
-You can use python create_data.py --model "train" --object_num X --overlap_rate X --creat_data True --concat_data False to generate data with different amounts and overlap rates.
+You can use 
+```python
+python create_data.py --model "train" --object_num X --overlap_rate X --creat_data True --concat_data False
+```
+to generate data with different amounts and overlap rates.
 
 # Others
 If you would like to use our data, please contact us via email:panxy@ihep.ac.cn.
