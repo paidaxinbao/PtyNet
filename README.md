@@ -22,4 +22,8 @@ python create_data.py --model "train" --object_num X --overlap_rate X --creat_da
 to generate data with different amounts and overlap rates.
 
 # Others
-If you would like to use our data, please contact us via email:panxy@ihep.ac.cn.
+If you want to use the trained network model for testing and finetune, or if you want to use an existing training dataset, please download it at the link (note that the link is only kept for 30 days).
+```
+https://9d353bdf5d.znas.cn/AppH5/share/?nid=LIYDIMJQGEYDESRSJY2TS&code=irJYOYGtDHMeWKtUaMFRslXD8cyRL7DIzMILqcSwU75kXbqV5bpfe0FYbMYcm3P3y&mode=file&display=list
+```
+If you have any questions, please contact the author at panxy@ihep.ac.cn
