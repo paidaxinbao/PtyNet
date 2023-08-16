@@ -46,56 +46,43 @@ class Network(nn.Module):
         self.encoder = nn.Sequential(
             Conv2D(in_channels=1, out_channels=16, kernel_size=3, stride=1, padding=1, is_seperable=False, has_bn=False,
                    has_relu=True),
-            Conv2D(in_channels=16, out_channels=16, kernel_size=3, stride=1, padding=1, is_seperable=False,
+            Conv2D(in_channels=16, out_channels=16, kernel_size=3, stride=2, padding=1, is_seperable=False,
                    has_relu=True),
-            nn.MaxPool2d((2, 2)),
 
-            Conv2D(in_channels=16, out_channels=32, kernel_size=3, stride=1, padding=1, is_seperable=False, has_bn=False,
+            Conv2D(in_channels=16, out_channels=16, kernel_size=3, stride=1, padding=1, is_seperable=False, has_bn=False,
                    has_relu=True),
-            Conv2D(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1, is_seperable=False,
+            Conv2D(in_channels=16, out_channels=32, kernel_size=3, stride=2, padding=1, is_seperable=False,
                    has_relu=True),
-            nn.MaxPool2d((2, 2)),
 
             Conv2D(in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1, is_seperable=False, has_bn=False,
                    has_relu=True),
-            Conv2D(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1, is_seperable=False,
+            Conv2D(in_channels=64, out_channels=128, kernel_size=3, stride=2, padding=1, is_seperable=False,
                    has_relu=True),
-            nn.MaxPool2d((2, 2)),
-
-            Conv2D(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=1, is_seperable=False, has_bn=False,
-                   has_relu=True),
-            Conv2D(in_channels=128, out_channels=256, kernel_size=3, stride=1, padding=1, is_seperable=False,
-                   has_relu=True),
-            nn.MaxPool2d((2, 2))
         )
 
         self.decoder = nn.Sequential(
-            Conv2D(in_channels=256, out_channels=256, kernel_size=5, stride=1, padding=2, is_seperable=False,
+            Conv2D(in_channels=128, out_channels=64, kernel_size=3, stride=1, padding=1, is_seperable=False,
                    has_relu=True),
-            Conv2D(in_channels=256, out_channels=128, kernel_size=5, stride=1, padding=2, is_seperable=True,
+            Conv2D(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1, is_seperable=True,
                    has_relu=True),
-            nn.ConvTranspose2d(in_channels=128, out_channels=128, kernel_size=2, stride=2, padding=0),
+            nn.ConvTranspose2d(in_channels=64, out_channels=64, kernel_size=4, stride=2, padding=1, groups=2),
+            nn.LeakyReLU(0.2),
 
-            Conv2D(in_channels=128, out_channels=128, kernel_size=5, stride=1, padding=2, is_seperable=False,
+            Conv2D(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1, is_seperable=False,
                    has_relu=True),
-            Conv2D(in_channels=128, out_channels=64, kernel_size=5, stride=1, padding=2, is_seperable=True,
+            Conv2D(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1, is_seperable=True,
                    has_relu=True),
-            nn.ConvTranspose2d(in_channels=64, out_channels=64, kernel_size=2, stride=2, padding=0),
+            nn.ConvTranspose2d(in_channels=64, out_channels=64, kernel_size=4, stride=2, padding=1, groups=2),
+            nn.LeakyReLU(0.2),
 
-            Conv2D(in_channels=64, out_channels=64, kernel_size=5, stride=1, padding=2, is_seperable=False,
-                   has_relu=True),
-            Conv2D(in_channels=64, out_channels=32, kernel_size=5, stride=1, padding=2, is_seperable=True,
-                   has_relu=True),
-            nn.ConvTranspose2d(in_channels=32, out_channels=32, kernel_size=2, stride=2, padding=0),
+            nn.Conv2d(in_channels=64, out_channels=16, kernel_size=3, stride=1, padding=1, groups=1),
+            nn.LeakyReLU(0.2),
+            nn.Conv2d(in_channels=16, out_channels=2, kernel_size=3, stride=1, padding=1, groups=2),
+            nn.LeakyReLU(0.2),
+            nn.ConvTranspose2d(in_channels=2, out_channels=2, kernel_size=4, stride=2, padding=1, groups=2),
+
+            nn.Hardtanh(-1, 1)
         )
-
-        self.decoder.add_module('groupconv2d1', nn.Conv2d(in_channels=32, out_channels=16, kernel_size=5, stride=1, padding=2, groups=2))
-        self.decoder.add_module('leakrelu', nn.LeakyReLU(0.2))
-        self.decoder.add_module('groupconv2d2', nn.Conv2d(in_channels=16, out_channels=2, kernel_size=5, stride=1, padding=2, groups=2))
-        self.decoder.add_module('hardtanh', nn.Hardtanh(-1, 1))
-        # upsample
-        self.decoder.add_module('upsample', nn.Upsample(scale_factor=2, mode='bicubic'))
-        # self.decoder.add_module('convtrans', nn.ConvTranspose2d(in_channels=16, out_channels=2, kernel_size=2, stride=2, padding=0))
 
 
     def forward(self, x):
